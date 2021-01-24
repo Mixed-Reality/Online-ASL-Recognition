@@ -1,51 +1,64 @@
 let video;
+let handPoseNet;
+let pose = [];
 let predictions = [];
+let nn;
+let currentState = "waiting";
+let targetLabel;
 
-// width = 640;
-// height = 480;
+// number of hand features detected = 21
+
+function keyPressed() {
+  targetLabel = key;
+  console.log(targetLabel);
+  console.log("Collecting");
+  currentState = "collecting";
+}
 
 function modelLoaded() {
-  console.log("Model loaded");
+  console.log("Handpose net loaded");
 }
 
 function setup() {
   createCanvas(640, 480);
-  // const video = document.getElementById("video");
-  // video = document.querySelector("#videoElement");
-  // if (navigator.mediaDevices.getUserMedia) {
-  //   navigator.mediaDevices
-  //     .getUserMedia({ video: true })
-  //     .then(function (stream) {
-  //       video.srcObject = stream;
-  //     })
-  //     .catch(function (err0r) {
-  //       console.log("Something went wrong!");
-  //     });
-  // }
 
   video = createCapture(VIDEO);
   video.size(width, height);
 
-  // Initialize model
-  const handpose = ml5.handpose(video, modelLoaded);
-
-  // This sets up an event that fills the global variable "predictions"
-  // with an array every time new hand poses are detected
-  handpose.on("predict", (results) => {
+  // initialize hand pose net
+  handPoseNet = ml5.handpose(video, modelLoaded);
+  // handPoseNet.on("predict", gotHandPoses);
+  handPoseNet.on("predict", (results) => {
     predictions = results;
-    console.log(predictions);
+    gotHandPoses;
   });
+
   video.hide();
-  console.log("Setup complete");
+
+  const options = {
+    inputs: 21 * 3,
+    outputs: 4,
+    task: "classification",
+    debug: true,
+  };
+
+  nn = ml5.neuralNetwork(options); // initialize dense neural network
+}
+
+function gotHandPoses(poses) {
+  pose = poses;
+
+  if (poses.length > 0) {
+    pose = poses[0].landmarks; // an array of xyz co-ordinates of hand
+  }
 }
 
 function draw() {
   image(video, 0, 0, width, height);
-
   drawKeypoints();
 }
 
-// Totally my code
+// A function to draw ellipses over the detected keypoints
 function drawKeypoints() {
   for (let i = 0; i < predictions.length; i += 1) {
     const prediction = predictions[i];
