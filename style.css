@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: rgb(175, 230, 255);
+}
+
+#canvasContainer {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+}
+
+.info {
+  flex: 1;
+  background-color: black;
+  margin: 1rem;
+}
+
+#mycanvas {
+  flex: 1;
+  margin: 1rem;
+}
+
+.heading {
+  text-align: center;
+}

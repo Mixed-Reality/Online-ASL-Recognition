@@ -8,6 +8,8 @@ let targetLabel = null;
 
 let collectingData = false;
 
+let poseLabel = "";
+
 // number of hand features detected = 21
 
 function isvalidKey(pressedKey) {
@@ -62,7 +64,7 @@ function finishTrain() {
 }
 
 function setup() {
-  createCanvas(640, 480);
+  const cnv = createCanvas(640, 480);
 
   video = createCapture(VIDEO);
   video.size(width, height);
@@ -93,6 +95,9 @@ function setup() {
 
   nn = ml5.neuralNetwork(options); // initialize dense neural network
   nn.load(modelInfo, nnLoaded);
+
+  cnv.id("mycanvas");
+  cnv.parent("canvasContainer");
 }
 
 function nnLoaded() {
@@ -120,9 +125,8 @@ function classifyGesture() {
 }
 
 function gotResults(err, results) {
-  console.log("results: ");
-  console.log(results);
-  console.log("label: ", results[0].label);
+  // console.log("label: ", results[0].label);
+  poseLabel = results[0].label;
   classifyGesture();
 }
 
@@ -151,6 +155,12 @@ function gotHandPoses(result) {
 function draw() {
   image(video, 0, 0, width, height);
   drawKeypoints();
+
+  fill(39, 177, 229);
+  noStroke();
+  textSize(256);
+  textAlign(CENTER, CENTER);
+  text(poseLabel, width / 2, height / 2);
 }
 
 // A function to draw ellipses over the detected keypoints
