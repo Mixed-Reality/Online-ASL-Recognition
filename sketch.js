@@ -23,7 +23,7 @@ function keyPressed() {
   pressedKey = key;
   targetLabel = isvalidKey(pressedKey) ? pressedKey : null;
   // save collected data if 's' is pressed
-  if (targetLabel.toLowerCase() === "s") {
+  if (targetLabel === "s" || targetLabel === "S") {
     nn.saveData();
   } else if (targetLabel) {
     console.log("Collecting");
@@ -41,6 +41,24 @@ function keyPressed() {
 
 function modelLoaded() {
   console.log("Handpose net loaded");
+}
+
+function trainModel() {
+  // console.log("loading data");
+  // console.log(nn.data);
+  // nn.loadData("gestures.json", beginTraining());
+  // beginTraining();
+}
+
+function beginTraining() {
+  console.log("Training started");
+  nn.normalizeData();
+  nn.train({ epochs: 50 }, finishTrain);
+}
+
+function finishTrain() {
+  console.log("train finished");
+  nn.save();
 }
 
 function setup() {
@@ -67,7 +85,45 @@ function setup() {
     debug: true,
   };
 
+  const modelInfo = {
+    model: "model/model.json",
+    metadata: "model/model_meta.json",
+    weights: "model/model.weights.bin",
+  };
+
   nn = ml5.neuralNetwork(options); // initialize dense neural network
+  nn.load(modelInfo, nnLoaded);
+}
+
+function nnLoaded() {
+  console.log("Dense Model loaded");
+  classifyGesture();
+}
+
+function classifyGesture() {
+  if (pose.length > 0) {
+    let inputs = []; // inputs for neural network
+
+    for (let i = 0; i < pose.length; i++) {
+      // Storing feature co-ordinates in 1-D array
+      const x = parseFloat(pose[i][0].toFixed(2));
+      const y = parseFloat(pose[i][1].toFixed(2));
+      const z = parseFloat(pose[i][2].toFixed(2));
+      inputs.push(x);
+      inputs.push(y);
+      inputs.push(z);
+    }
+    nn.classify(inputs, gotResults);
+  } else {
+    setTimeout(classifyGesture, 100);
+  }
+}
+
+function gotResults(err, results) {
+  console.log("results: ");
+  console.log(results);
+  console.log("label: ", results[0].label);
+  classifyGesture();
 }
 
 function gotHandPoses(result) {
@@ -79,9 +135,9 @@ function gotHandPoses(result) {
 
       for (let i = 0; i < pose.length; i++) {
         // Storing feature co-ordinates in 1-D array
-        const x = parseInt(pose[i][0].toFixed(2));
-        const y = parseInt(pose[i][1].toFixed(2));
-        const z = parseInt(pose[i][2].toFixed(2));
+        const x = parseFloat(pose[i][0].toFixed(2));
+        const y = parseFloat(pose[i][1].toFixed(2));
+        const z = parseFloat(pose[i][2].toFixed(2));
         inputs.push(x);
         inputs.push(y);
         inputs.push(z);
