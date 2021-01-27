@@ -19,6 +19,16 @@ function isvalidKey(pressedKey) {
   return false;
 }
 
+function displayResult(result) {
+  const res = document.getElementById("res");
+  const confidence = document.getElementById("confidence");
+  res.innerHTML = result[0].label;
+  let score = (result[0].confidence * 100).toFixed(2);
+
+  let confidenceStr = score.toString() + " %";
+  confidence.innerHTML = confidenceStr;
+}
+
 // check for key presses
 function keyPressed() {
   // targetLabel = key;
@@ -127,6 +137,7 @@ function classifyGesture() {
 function gotResults(err, results) {
   // console.log("label: ", results[0].label);
   poseLabel = results[0].label;
+  displayResult(results);
   classifyGesture();
 }
 
@@ -156,11 +167,11 @@ function draw() {
   image(video, 0, 0, width, height);
   drawKeypoints();
 
-  fill(39, 177, 229);
-  noStroke();
-  textSize(256);
-  textAlign(CENTER, CENTER);
-  text(poseLabel, width / 2, height / 2);
+  // fill(39, 177, 229);
+  // noStroke();
+  // textSize(256);
+  // textAlign(CENTER, CENTER);
+  // text(poseLabel, width / 2, height / 2);
 }
 
 // A function to draw ellipses over the detected keypoints

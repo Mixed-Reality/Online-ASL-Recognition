@@ -13,6 +13,11 @@
     />
 
     <link rel="stylesheet" href="./style.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@500&display=swap"
+      rel="stylesheet"
+    />
 
     <script src="libraries/p5.js"></script>
     <script src="libraries/p5.dom.js"></script>
@@ -23,18 +28,29 @@
   </head>
   <body>
     <!-- <button type="button" placeholder="Train Model" name="train" id="train" onclick="beginTraining()" style="align-items: baseline;">Train</button> -->
-
-    <div class="jumbotron">
-      <h3 class="display-4 heading">ASL gesture recognition</h3>
-      <p class="lead" style="text-align: center">
-        This is a simple hero unit, a simple jumbotron-style component for
-        calling extra attention to featured content or information.
-      </p>
-    </div>
-
-    <div id="canvasContainer">
-      <div class="info">
-        <h3>this is info</h3>
+    <div class="container-fluid">
+      <div class="container-fluid" style="width: 100%">
+        <div class="jumbotron">
+          <h3 class="display-4 heading">ASL gesture recognition</h3>
+          <p class="lead" style="text-align: center">
+            A simple web page for recognizing American Sign Language Gestures
+            from live web cam.
+          </p>
+        </div>
+      </div>
+      <div class="container-fluid">
+        <div id="canvasContainer">
+          <div class="info">
+            <h2 style="text-align: center; margin: 1rem">Prediction</h2>
+            <h6 style="margin-left: 1rem; text-align: center">
+              Currently available Gestures - A || B || C || D
+            </h6>
+            <h1 id="res">A</h1>
+            <div class="score" style="margin-left: 1.5rem">
+              Confidence: <span id="confidence"></span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
